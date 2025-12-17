@@ -1,0 +1,3 @@
+The full OMat24 dataset contains ~100 million structures.
+The test set of OMat24 contains ~1 million structures.
+The full predictions by the 21 UMLIPs is too large so here provides 3% of the test set, which contains ~300,000 configurations.
