@@ -1,11 +1,9 @@
-**Uncertainty quantification for universal machine learning interatomic potentials**
+# Uncertainty quantification for universal machine learning interatomic potentials
 
 
-# Pure W Dataset and Potentials
+## Pure W Dataset and Potentials
 
 This repository contains datasets and interatomic potentials for **pure tungsten (W)**, used to study uncertainty-aware machine-learning interatomic potentials (uMLIPs) and mixed-precision training strategies.
-
-## Directory Structure
 
 ### `Pure_W/`
 
@@ -42,18 +40,3 @@ Compressed pickle file containing the **DFT reference dataset** for pure tungste
 - Corresponding atomic configurations
 
 This dataset serves as the ground truth for validation and benchmarking.
-
-## Intended Use
-
-The data and potentials in this repository can be used for:
-
-- Benchmarking uMLIP uncertainty estimates  
-- Studying mixed-precision training strategies  
-- Training and validating ACE potentials with controlled DFT fractions  
-- Analyzing energy–force consistency across different model fidelities  
-
-## Notes
-
-- All datasets correspond to **pure tungsten (W)** only.
-- File formats are intended for Python-based workflows (e.g., ASE, PyACE).
-- Users are encouraged to document any derived datasets or retrained potentials for reproducibility.
