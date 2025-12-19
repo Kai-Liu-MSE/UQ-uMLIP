@@ -32,6 +32,10 @@ The **first digit of the filename** indicates the precision level of the trainin
 
 These potentials are designed to systematically assess how **training-set precision and DFT fraction** affect the performance of system-specific ACE models.
 
+For each dataset, **five independently trained ACE potentials** were generated to assess training variability.  
+The **last digit of the filename** denotes the **replicate index (0–4)**.
+
+
 #### `W_DFT.pckl.gzip`
 Compressed pickle file containing the **DFT reference dataset** for pure tungsten:
 
