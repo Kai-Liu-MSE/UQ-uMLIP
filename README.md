@@ -5,7 +5,7 @@
 
 This repository contains datasets and interatomic potentials for **pure tungsten (W)**, used to study uncertainty-aware machine-learning interatomic potentials (uMLIPs) and mixed-precision training strategies.
 
-### `Pure_W/`
+#### `Pure_W/`
 
 This folder contains all data related to the pure tungsten system.
 
