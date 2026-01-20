@@ -1,0 +1,107 @@
+from ase import Atoms
+import os
+import pandas as pd
+import numpy as np
+from tqdm import tqdm  # Import tqdm for the progress bar
+
+from sevenn.calculator import SevenNetCalculator
+# The 'modal' argument is required if the model is trained with multi-fidelity learning enabled.
+calc = SevenNetCalculator(model='7net-mf-ompa', modal='mpa')
+
+# Define the directory containing the .pckl.gzip files
+input_folder = "../"
+
+# Ensure the output folder exists
+
+# List all .pckl.gzip files in the input folder
+input_files = [f for f in os.listdir(input_folder) if f.endswith('.pckl.gzip')]
+
+# Process each file
+for file_name in tqdm(input_files, desc="Processing files"):
+    # Construct the full file path
+    file_path = os.path.join(input_folder, file_name)
+    
+    # Load the data
+    df1 = pd.read_pickle(file_path, compression="gzip")
+    
+    atom1 = df1["ase_atoms"]
+    pe1_pred = []
+    force1_pred = []
+    N1 = []
+    structures = []
+    
+    for iatom in tqdm(atom1, desc="Processing atoms in file"):
+        natom = iatom.get_global_number_of_atoms()
+        iatom.calc = calc
+        i_pe = iatom.get_potential_energy() / natom
+        i_force = iatom.get_forces()
+        iatom.calc = []
+        structures.append({'ase_atoms': iatom, 'energy': i_pe, 'forces': i_force})
+    
+    # Create a DataFrame from the processed structures
+    df = pd.DataFrame(structures)
+    
+    # Add energy corrected if needed
+    reference_energy = 0
+    df['energy_corrected'] = df['energy'] - reference_energy
+    
+    # Save the processed DataFrame
+    output_file_name = os.path.splitext(file_name)[0] + '_new.pckl.gzip'
+    df.to_pickle(output_file_name, compression='gzip', protocol=4)
+
+print("All files processed and saved.")
+
+
+####################################################################################
+#7net_mf_ompa_mpa
+#calc = SevenNetCalculator(model='7net-mf-ompa', modal='mpa')
+#7net_mf_ompa_omat24
+#calc = SevenNetCalculator(model='7net-mf-ompa', modal='omat24')
+#7net_omat
+#calc = SevenNetCalculator(model='7net-omat', modal='omat24')
+
+#mace
+#from mace.calculators import mace_mp
+#device="cpu" # or device="cuda"
+#calc = mace_mp(model="./mace-omat-0-medium.model", dispersion=False, default_dtype="float64", device=device)
+
+#Orb
+#from orb_models.forcefield import pretrained
+#from orb_models.forcefield.calculator import ORBCalculator
+
+#Orb-v3-c-20-omat
+#orbff = pretrained.orb_v3_conservative_20_omat(
+  device=device,
+  precision="float32-high",   # or "float32-highest" / "float64
+)
+#calc = ORBCalculator(orbff, device=device)
+
+#Orb-v3-c-inf-omat
+#orbff = pretrained.orb_v3_conservative_inf_omat(
+  device=device,
+  precision="float32-high",   # or "float32-highest" / "float64
+)
+
+#Orb-v3-d-20-omat
+#orbff = pretrained.orb_v3_direct_20_omat(
+  device=device,
+  precision="float32-high",   # or "float32-highest" / "float64
+)
+
+#Orb-v3-d-inf-omat
+#orbff = pretrained.orb_v3_direct_inf_omat(
+  device=device,
+  precision="float32-high",   # or "float32-highest" / "float64
+)
+
+#eqV2_31M_omat
+#from fairchem.core import OCPCalculator
+#calc = OCPCalculator(checkpoint_path="/path/to/eqV2_31M_omat.pt", seed=1, cpu=False)
+
+#eqV2_86M_omat
+#calc = OCPCalculator(checkpoint_path="/path/to/eqV2_86M_omat.pt", seed=1, cpu=False)
+
+#esen_30M_omat
+calc = OCPCalculator(checkpoint_path="/path/to/esen_30m_omat.pt", seed=1, cpu=False)
+
+
