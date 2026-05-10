@@ -1,0 +1,85 @@
+units metal
+dimension 3
+boundary p p p
+atom_style atomic
+neighbor 2 bin
+read_data ../../SC-diffusion.data
+
+mass 1 51.996
+mass 2 180.948
+mass 3 50.942
+mass 4 183.84
+
+group Mo type 1
+group Nb type 2
+group Ta type 3
+group W type 4
+
+
+pair_style pace
+
+pair_coeff * * ../DFT.yace Mo Nb Ta W
+
+min_style cg
+
+minimize  0 1e-2 100 100000
+
+fix 1 all box/relax iso 0.0 vmax 0.001
+
+min_style cg
+
+minimize  0 1e-2 500 100000
+
+unfix 1
+
+timestep 0.002
+
+reset_atoms id
+
+velocity all create 1500 12345 mom yes rot no
+
+fix 1 all nvt temp 1500 1500 0.2
+
+run 5000
+
+unfix 1
+
+fix 1 all npt temp 1500 1500 0.2 iso 0.0 0.0 2
+
+run 20000
+
+unfix 1
+
+reset_timestep	0
+
+
+variable thremo_freq equal 500                             #print out frequency of thermodynamic quantities
+variable tstep equal 0.002                                #time step in ps; 0.00025 corresponds to 0.25fs, which is usually accurate enough for H
+variable my_time equal step*${tstep}
+
+fix rec1 all recenter INIT INIT INIT
+
+compute m1 Mo msd
+compute m2 Nb msd
+compute m3 Ta msd
+compute m4 W msd
+
+variable Mo_msd  equal c_m1[4]
+
+variable Nb_msd  equal c_m2[4]
+
+variable Ta_msd  equal c_m3[4]
+
+variable W_msd  equal c_m4[4]
+
+dump 1all   all custom  1000    dump.all id type x y z
+
+fix printmsd Mo print ${thremo_freq} "${my_time} ${Mo_msd}"  screen no file msd_Mo.txt
+fix printmsd Nb print ${thremo_freq} "${my_time} ${Nb_msd}"  screen no file msd_Nb.txt
+fix printmsd Ta print ${thremo_freq} "${my_time} ${Ta_msd}"  screen no file msd_Ta.txt
+fix printmsd W print ${thremo_freq} "${my_time} ${W_msd}"  screen no file msd_W.txt
+
+fix 1 all nvt temp 1500 1500 0.2
+
+run 1000000
+
