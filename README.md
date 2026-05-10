@@ -6,10 +6,11 @@ It accompanies the methodology proposed in:
 > **K. Liu et al.**, *Heterogeneous ensemble enables a universal uncertainty metric for atomistic foundation models*,  
 > **npj Computational Materials (2025)**.
 
-The repository consists of two main parts:
-1. Benchmarking uncertainty metrics on the **OMat24 dataset**
-2. Application to **pure tungsten (W)** with mixed-precision ACE potentials
+The repository consists of three main parts:
 
+1. Benchmarking uncertainty metrics on the OMat24 dataset
+2. Application to pure tungsten (W) with mixed-precision ACE potentials
+3. ACE potentials for the MoNbTaW refractory alloy system
 ---
 
 ## 1. Benchmarking Uncertainty \( U \) on the OMat24 Dataset
@@ -120,6 +121,19 @@ This dataset serves as the **ground truth** for validation and benchmarking.
 
 Evaluates the performance of ACE potentials trained on different datasets using the independent W test set from  
 https://doi.org/10.1038/s41524-025-01599-1.
+
+---
+
+## 3. MoNbTaW Dataset and Potentials
+
+The `MoNbTaW/` folder contains ACE potentials for the Mo-Nb-Ta-W refractory alloy system.
+
+It includes two sets of ACE potentials:
+
+- `DFT_dataset/`: five ACE potentials trained using DFT data
+- `uMLIP_dataset/`: five ACE potentials trained using uMLIP distillation data
+
+The `in.diffuse` and `SC-diffusion.data` files are provided as LAMMPS examples for running diffusion simulations with the ACE potentials.
 
 ---
 
